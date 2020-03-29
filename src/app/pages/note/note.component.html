@@ -1,0 +1,106 @@
+<div *ngIf="iscreate" class="m-l-10">
+  <div>
+    <strong>
+      <p class="welcome"> Add a to Note</p>
+    </strong>
+  </div>
+
+  <form [formGroup]="onNoteForm" class="m-l-10">
+    <div class="form-group">
+      <label class="col-sm-2 col-form-label">Note Text
+        <span class="asterisk required">*</span>
+      </label>
+      <div class="col-sm-10">
+        <textarea rows="4" cols="50" name="noteText" class="form-control" placeholder="Note Text"
+          formControlName="noteText"></textarea>
+      </div>
+      <div class="col-sm-10" *ngFor="let validation of validation_messages.noteText">
+        <p class="text-danger" *ngIf="onNoteForm.get('noteText').hasError(validation.type) && submitted">
+          <span>{{ validation.message }}</span></p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 col-form-label">Note Color
+        <span class="asterisk required">*</span>
+      </label>
+      <div class="col-sm-10">
+        <input type="text" name="noteText" class="form-control" placeholder="Note Color" formControlName="noteColor"
+          maxlength="50">
+      </div>
+      <div class="col-sm-10" *ngFor="let validation of validation_messages.noteColor">
+        <p class="text-danger" *ngIf="onNoteForm.get('noteColor').hasError(validation.type) && submitted">
+          <span>{{ validation.message }}</span></p>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-12">
+        <div>
+          <button type="button" *ngIf="isUpdate" class="btn btn-success" (click)="onClickSave();">
+            <i class="icofont icofont-paper-plane"></i>Update
+          </button>&nbsp;
+          <button type="button" *ngIf="isSave" class="btn btn-success" (click)="onClickSave();">
+            <i class="icofont icofont-save"></i>Save
+          </button>&nbsp;
+          <button type="button" class="btn btn-danger" (click)="onClickCancel()">
+            <i class="icofont icofont-close"></i>Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<div *ngIf="!iscreate" class="row m-l-20">
+  <div>
+    <strong>
+      <p class="welcome"> Welcome to Notes App</p>
+    </strong>
+  </div>
+  <div class="col-sm-12">
+  <div  style="float: right;">
+    <button  type="button" class="btn btn-primary" (click)="onClickCreate()">
+      <i class="icofont icofont-plus-circle"></i> Add Note
+    </button>
+    <label> 
+      <input type="search" [(ngModel)]="filterQuery" (ngModelChange)="filter();" class="form-control input-sm full-data-search"
+        placeholder="search"></label><br>
+  </div>
+  </div>
+  <br>
+  <div class="row">
+    <p-table #dt [columns]="cols" [value]="notes" [scrollable]="true" [rows]="10"
+      scrollHeight="270px" [virtualRowHeight]="50" [loading]="loading"
+      [virtualScroll]="true" (onLazyLoad)="loadLazy($event)" [lazy]="true" [totalRecords]="totalRecords">
+      <ng-template pTemplate="caption">
+        <p>List of Notes</p>
+      </ng-template>
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th class="width-80">
+            Sl. No
+          </th>
+          <th *ngFor="let col of cols">
+            {{col.header}}
+          </th>
+          <th class="width-120">
+            Actions
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+        <tr class="width-80">
+          <td style="width: 80px;">
+            {{rowIndex+1}}
+          </td>
+          <td *ngFor="let col of cols">
+            {{rowData[col.field]}}
+          </td>
+          <td class="width-120">
+            <img (click)="edit(rowIndex);" src="assets/edit.png"> &nbsp;&nbsp;&nbsp;&nbsp;
+            <img (click)="delete(rowIndex);"src="assets/delete.png">
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+    <p *ngIf="notes.length ==0"> No Records Found</p>
+  </div>
+</div>
